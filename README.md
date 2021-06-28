@@ -20,7 +20,7 @@ If necessary, you can set a limit for tree item length. If some item length exce
 An example of using you can see in SaxParserText.cpp. It accepts the input text file in XML format and creates output XML text file with tree view formatting. Thus, if the input text is presented in “plain” form (continuous solid text stream), the output file will be presented in tree view form with indents 
 
 Changes from Tkachenko project:
-- formatter uses ToXML which changes back entities like "<" to "&lt;" and others
+- formatter uses ToXML which changes back entities like "<" to entities with ampersandes
 - uses std::string instead of char*
 - class names not begin with C
 - instead of m_nIndentCount,m_chIndentSymbol is m_IndentString
