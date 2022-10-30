@@ -15,7 +15,7 @@ public:
     }
 protected:
     ofstream& m_file;
-    void Output(const string szText) override { m_file << szText; }
+    void Output(const string & szText) override { m_file << szText; }
 };
 
 int main(int argc, char* argv[])

@@ -15,7 +15,7 @@ void SaxFormatter::DoIndent()
 }
 
 
-void SaxFormatter::OnElementBegin(const std::string szName)
+void SaxFormatter::OnElementBegin(const std::string & szName)
 {
 	if (m_bOpen)
 		Output(">");
@@ -27,14 +27,14 @@ void SaxFormatter::OnElementBegin(const std::string szName)
 	Incr();
 }
 
-void SaxFormatter::OnCloseSingleElement(const std::string szName)
+void SaxFormatter::OnCloseSingleElement(const std::string & szName)
 {
 	Output("/>");
 	Decr();
 	m_bOpen=false;
 }
 
-void SaxFormatter::OnElementEnd(const std::string szName)
+void SaxFormatter::OnElementEnd(const std::string & szName)
 {
 	if (m_bOpen)
 		Output(">");
@@ -53,13 +53,13 @@ void SaxFormatter::OnElementEnd(const std::string szName)
 	m_bValue=false;
 }
 
-void SaxFormatter::OnAttribute(const std::string szName, const std::string szValue)
+void SaxFormatter::OnAttribute(const std::string & szName, const std::string & szValue)
 {
 	Output(" "); Output(ToXML(szName)); Output("=");
 	Output("\""); Output(ToXML(szValue)); Output("\"");
 }
 
-void SaxFormatter::OnCDATA(const std::string szValue)
+void SaxFormatter::OnCDATA(const std::string & szValue)
 {
 	if (m_bOpen)
 		Output(">");
@@ -70,7 +70,7 @@ void SaxFormatter::OnCDATA(const std::string szValue)
 	m_bOpen=false;
 }
 
-void SaxFormatter::OnComment(const std::string szText)
+void SaxFormatter::OnComment(const std::string & szText)
 {
 	if (m_bOpen)
 		Output(">");
@@ -81,7 +81,7 @@ void SaxFormatter::OnComment(const std::string szText)
 	m_bOpen=false;
 }
 
-void SaxFormatter::OnDeclaration(const std::string szVersion, const std::string szEncoding, const std::string szStandAlone)
+void SaxFormatter::OnDeclaration(const std::string & szVersion, const std::string & szEncoding, const std::string & szStandAlone)
 {
 	DoIndent();
 	Output("<?xml ");
@@ -94,7 +94,7 @@ void SaxFormatter::OnDeclaration(const std::string szVersion, const std::string 
 	Output(" ?>"); 
 }
 
-void SaxFormatter::OnProcessing(const std::string szValue)
+void SaxFormatter::OnProcessing(const std::string & szValue)
 {
 	if (m_bOpen)
 		Output(">");
@@ -104,7 +104,7 @@ void SaxFormatter::OnProcessing(const std::string szValue)
 	DoBreakLine();
 }
 
-void SaxFormatter::OnText(const std::string szValue)
+void SaxFormatter::OnText(const std::string & szValue)
 {
 	if (m_bOpen)
 	{
