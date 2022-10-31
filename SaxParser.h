@@ -20,6 +20,7 @@ public:
 	virtual void OnNotLeadingChar(char /*c*/) { }
 	virtual void OnDocumentBegin() {}
 	virtual void OnDocumentEnd() {}
+	virtual void OnEncoding(const std::string & /*szName*/) { }
 	virtual void OnElementBegin(const std::string & /*szName*/) { }
 	virtual void OnElementEnd(const  std::string & /*szName*/) { }
 	virtual void OnCloseSingleElement(const std::string & /*szName*/) { }

@@ -757,9 +757,8 @@ void SaxParser::EnterDeclaration()
 				EnterAttribute(&encoding,c);
 				if (encoding.m_name!="encoding")
                     ThrowException(SPE_INVALID_DECL);
-				if (encoding.m_value!="")
-                    ThrowException(SPE_ENCODING);
 				SkipWhiteSpace();
+				m_pHandler->OnEncoding(encoding.m_value);
 				state=st_end_encoding;
 				break;
 			case 's':
