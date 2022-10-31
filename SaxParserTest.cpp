@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstring>
 
-int strcmpi(char const *a, char const *b);
+int strcmpi_case_insensitive(char const *a, char const *b);
 
 using namespace std;
 

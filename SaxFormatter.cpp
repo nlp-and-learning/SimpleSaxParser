@@ -27,7 +27,7 @@ void SaxFormatter::OnElementBegin(const std::string & szName)
 	Incr();
 }
 
-void SaxFormatter::OnCloseSingleElement(const std::string & szName)
+void SaxFormatter::OnCloseSingleElement(const std::string & /*szName*/)
 {
 	Output("/>");
 	Decr();

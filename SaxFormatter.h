@@ -20,7 +20,7 @@ public:
 	void SetIndentAsTab(); //Set indent as tabulation
 	void SetIndentAsBlank(int n); //Set indent as whitespace
 protected:
-	virtual void Output(const std::string & szText) {}
+	virtual void Output(const std::string & /*szText*/) { }
 
 private:
 	std::string m_IndentString;
