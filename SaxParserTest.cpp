@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstring>
 
-int strcmpi(char const *a, char const *b);
+int strcmpi_case_insensitive(char const *a, char const *b);
 
 using namespace std;
 
@@ -15,7 +15,7 @@ public:
     }
 protected:
     ofstream& m_file;
-    void Output(const string szText) override { m_file << szText; }
+    void Output(const string & szText) override { m_file << szText; }
 };
 
 int main(int argc, char* argv[])

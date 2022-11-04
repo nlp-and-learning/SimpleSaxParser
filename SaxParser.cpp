@@ -159,14 +159,14 @@ int findEntity(char c) {
 }
 
 string ToXML(string str) {
-    int lenOut = str.length();
-    for (int i=0; i<str.length(); i++) {
+	size_t lenOut = str.length();
+    for (size_t i=0; i<str.length(); i++) {
         int k = findEntity(str[i]);
         if (k>=0) lenOut+= g_ListEntity[k].m_szEntity.length()+1;
     }
     string outStr;
     outStr.resize(lenOut);
-    int i2=0;
+    size_t i2=0;
     for (int i=0; i<str.length(); i++) {
         int k = findEntity(str[i]);
         if (k>=0) {
@@ -248,7 +248,7 @@ bool IsCharNameValid(char c)
 	return false;
 }
 
-int strcmpi(char const *a, char const *b)
+int strcmpi_case_insensitive(char const *a, char const *b)
 {
     for (;; a++, b++) {
         int d = tolower((unsigned char)*a) - tolower((unsigned char)*b);
@@ -261,7 +261,7 @@ bool IsXML(const string& str, bool& bError)
 {
     bError = false;
 	if (str.size()<3) return false;
-	if (strcmpi(str.c_str(),"xml")==0)
+	if (strcmpi_case_insensitive(str.c_str(),"xml")==0)
 	{
         if (str[0] == 'X' || str[1] == 'M' || str[2] == 'L')
         {
@@ -620,7 +620,7 @@ void SaxParser::Parse(std::istream* pStream, XSPHandler* pHandler, int encoding)
 
 void SaxParser::EnterProcessing()
 {
-	string accum; char store;
+	string accum; char store = '\0';
 	enum TEState {st_begin,st_first_part,st_enter,st_check_end,st_end};
 	TEState state=st_begin;
 
@@ -757,9 +757,8 @@ void SaxParser::EnterDeclaration()
 				EnterAttribute(&encoding,c);
 				if (encoding.m_name!="encoding")
                     ThrowException(SPE_INVALID_DECL);
-				if (encoding.m_value!="")
-                    ThrowException(SPE_ENCODING);
 				SkipWhiteSpace();
+				m_pHandler->OnEncoding(encoding.m_value);
 				state=st_end_encoding;
 				break;
 			case 's':
@@ -833,7 +832,7 @@ void SaxParser::EnterDeclaration()
 	m_pHandler->OnDeclaration(version.m_value,szEncoding,szStandalone);
 	m_pHandler->OnCloseTag();
 
-	if (strcmpi(encoding.m_value.c_str(),"UTF-8")==0)
+	if (strcmpi_case_insensitive(encoding.m_value.c_str(),"UTF-8")==0)
 		m_nEncoding=SPENC_UTF_8;
 	}
 	catch (SaxParserException& e)
@@ -858,11 +857,11 @@ void SaxParser::EnterOpenElement(char c)
 	
 	while (true)
 	{
-		char c=GetChar();
+		char cc=GetChar();
 		switch(state)
 		{
 		case st_name:
-			if (IsSpace(c))
+			if (IsSpace(cc))
 			{
 				SkipWhiteSpace();
 				m_pHandler->OnElementBegin(accum);
@@ -871,7 +870,7 @@ void SaxParser::EnterOpenElement(char c)
 			}
 			else
 			{
-				switch(c)
+				switch(cc)
 				{
 				case '>':
 					m_pHandler->OnElementBegin(accum);
@@ -885,16 +884,16 @@ void SaxParser::EnterOpenElement(char c)
 					state=st_single;
 					break;
 				default:
-					if (!::IsCharNameValid(c))
+					if (!::IsCharNameValid(cc))
                         ThrowException(SPE_ELEMENT_NAME);
 					else
-						accum+=c;
+						accum+=cc;
 				}
 			}
 			break;
 
 		case st_end_name:
-			if (c=='/')
+			if (cc=='/')
 			{
 				m_pHandler->OnCloseSingleElement(accum);
                 m_StackItems.pop_back();
@@ -903,7 +902,7 @@ void SaxParser::EnterOpenElement(char c)
 			else
 			{
 				SAttribute attr;
-				EnterAttribute(&attr,c);
+				EnterAttribute(&attr,cc);
 				for (auto i=listAttrNames.begin(); i!=listAttrNames.end(); i++)
 				{
 					if ((*i) == attr.m_name)
@@ -917,7 +916,7 @@ void SaxParser::EnterOpenElement(char c)
 			break;
 			
 		case st_end_attr:
-			switch(c)
+			switch(cc)
 			{
 			case '/':
 				m_pHandler->OnCloseSingleElement(accum);
@@ -930,7 +929,7 @@ void SaxParser::EnterOpenElement(char c)
 				break;
 			default:
 				SAttribute attr;
-				EnterAttribute(&attr,c);
+				EnterAttribute(&attr,cc);
                 for(auto i = listAttrNames.begin(); i != listAttrNames.end(); i++)
 				{
 					if ((*i)==attr.m_name)
@@ -944,9 +943,9 @@ void SaxParser::EnterOpenElement(char c)
 			break;
 
 		case st_single:
-			if (::IsSpace(c))
+			if (::IsSpace(cc))
                 ThrowException(SPE_WHITESPASE_CLOSE);
-			if (c!='>')
+			if (cc!='>')
                 ThrowException(SPE_MISSING_CLOSING);
 			m_pHandler->OnCloseTag();
 			return;
@@ -1157,7 +1156,7 @@ void SaxParser::EnterCDATA()
 	
 }
 
-void SaxParser::EnterDTD(char c)
+void SaxParser::EnterDTD(char /*c*/)
 {
     ThrowException(SPE_DTD_SUPPORT);
 }
@@ -1291,7 +1290,7 @@ void SaxParser::EnterAttribute(void* pAttr, char c)
 	pAttrData->m_name=c;
 	typedef enum {st_name,st_end_name,st_begin_value,st_value} TEState;
 	TEState state=st_name;
-	char cOpen; string temp;
+	char cOpen = '\0'; string temp;
 
 	try
 	{
@@ -1454,7 +1453,7 @@ char SaxParser::GetChar()
 		if ( m_nEncoding== SPENC_UTF_8 )
 		{
 			// Eat the 1 to 4 byte utf8 character.
-			int step = utf8ByteTable[c];
+			int step = utf8ByteTable[static_cast<unsigned char>(c)];
 			if ( step == 0 )
 				step = 1;		// Error case from bad encoding, but handle gracefully.
 			for (int i=1; i<step; i++)

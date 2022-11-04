@@ -14,20 +14,22 @@ std::string ToXML(std::string str);
 class XSPHandler
 {
 public:
+    virtual ~XSPHandler() = default;
 	virtual void OnOpenTag() {}
 	virtual void OnCloseTag() {}
-	virtual void OnNotLeadingChar(char c) {}
+	virtual void OnNotLeadingChar(char /*c*/) { }
 	virtual void OnDocumentBegin() {}
 	virtual void OnDocumentEnd() {}
-	virtual void OnElementBegin(const std::string szName) {}
-	virtual void OnElementEnd(const  std::string szName) {}
-	virtual void OnCloseSingleElement(const  std::string szName) {}
-	virtual void OnAttribute(const std::string szName, const std::string szValue) {}
-	virtual void OnText(const std::string szValue) {}
-	virtual void OnCDATA(const std::string szValue) {}
-	virtual void OnComment(const std::string szText) {}
-	virtual void OnDeclaration(const std::string szVersion,const std::string szEncoding, const std::string szStandAlone) {}
-	virtual void OnProcessing(const std::string szValue) {}
+	virtual void OnEncoding(const std::string & /*szName*/) { }
+	virtual void OnElementBegin(const std::string & /*szName*/) { }
+	virtual void OnElementEnd(const  std::string & /*szName*/) { }
+	virtual void OnCloseSingleElement(const std::string & /*szName*/) { }
+	virtual void OnAttribute(const std::string & /*szName*/, const std::string & /*szValue*/) { }
+	virtual void OnText(const std::string & /*szValue*/) { }
+	virtual void OnCDATA(const std::string & /*szValue*/) { }
+	virtual void OnComment(const std::string & /*szText*/) { }
+	virtual void OnDeclaration(const std::string & /*szVersion*/, const std::string & /*szEncoding*/, const std::string & /*szStandAlone*/) { }
+	virtual void OnProcessing(const std::string & /*szValue*/) { }
 };
 
 //Encoding types. Important: 16-bit encoding is not supported! (may be in the next version)
