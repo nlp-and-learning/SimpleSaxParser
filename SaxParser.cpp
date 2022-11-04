@@ -1453,7 +1453,7 @@ char SaxParser::GetChar()
 		if ( m_nEncoding== SPENC_UTF_8 )
 		{
 			// Eat the 1 to 4 byte utf8 character.
-			int step = utf8ByteTable[c];
+			int step = utf8ByteTable[static_cast<unsigned char>(c)];
 			if ( step == 0 )
 				step = 1;		// Error case from bad encoding, but handle gracefully.
 			for (int i=1; i<step; i++)
